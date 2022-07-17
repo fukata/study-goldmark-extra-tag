@@ -23,6 +23,7 @@ message3
 	md := goldmark.New(
 		goldmark.WithParserOptions(
 			parser.WithAutoHeadingID(),
+			WithCustomImage(),
 		),
 	)
 
