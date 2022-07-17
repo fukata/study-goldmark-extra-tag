@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"github.com/fukata/study-goldmark-extra-tag/custom"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/parser"
 )
@@ -18,12 +19,17 @@ message1
 message2
 
 message3
+
+# Custom Image
+
+[image id="1" caption="TEST"]
+
 `)
 
 	md := goldmark.New(
+		goldmark.WithExtensions(custom.Custom),
 		goldmark.WithParserOptions(
 			parser.WithAutoHeadingID(),
-			WithCustomImage(),
 		),
 	)
 
@@ -32,5 +38,9 @@ message3
 		panic(err)
 	}
 
+	fmt.Println("Input:")
+	fmt.Println(string(source))
+
+	fmt.Println("Output:")
 	fmt.Println(buf.String())
 }
