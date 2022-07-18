@@ -20,3 +20,15 @@ Output:
 	</a>
 </figure>
 ```
+
+## インストール
+
+```shell
+$ go install
+```
+
+## 実行方法
+
+```shell
+$ go run main.go
+```
