@@ -25,6 +25,12 @@ message3
 
 [image id="1" caption="TEST"]
 
+[image id="20" caption="HOGE FOO"]
+
+# Another Custom Tag
+
+[post id="1"]
+
 `)
 
 	md := goldmark.New(

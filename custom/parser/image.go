@@ -1,12 +1,14 @@
 package parser
 
 import (
-	"fmt"
+	customAst "github.com/fukata/study-goldmark-extra-tag/custom/ast"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/text"
 	"github.com/yuin/goldmark/util"
+	"regexp"
+	"strconv"
 )
 
 /**
@@ -26,6 +28,9 @@ Output:
 </figure>
 */
 
+var imageAttributeRe = regexp.MustCompile(`\s+([^=]+)="([^"]+)"`)
+var imageTagRe = regexp.MustCompile(`^\[image +.+](?:\r?\n)?`)
+
 type imageParser struct {
 }
 
@@ -39,9 +44,28 @@ func (p *imageParser) Trigger() []byte {
 
 func (p *imageParser) Open(parent ast.Node, reader text.Reader, pc parser.Context) (ast.Node, parser.State) {
 	line, _ := reader.PeekLine()
-	fmt.Println(string(line))
 
-	return nil, parser.NoChildren
+	if !imageTagRe.Match(line) {
+		return nil, parser.NoChildren
+	}
+
+	var itemId int64
+	var caption string
+	matches := imageAttributeRe.FindAllSubmatch(line, -1)
+	for _, m := range matches {
+		key := string(m[1])
+		value := string(m[2])
+
+		switch key {
+		case "id":
+			itemId, _ = strconv.ParseInt(value, 10, 64)
+		case "caption":
+			caption = value
+		}
+	}
+
+	node := customAst.NewImage(itemId, caption)
+	return node, parser.NoChildren
 }
 
 func (p *imageParser) Continue(node ast.Node, reader text.Reader, pc parser.Context) parser.State {
